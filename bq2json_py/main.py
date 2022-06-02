@@ -6,14 +6,6 @@ import os
 import argparse
 
 
-
-
-
-  
-
-  
-
-
 def create(args):
     load_dotenv()
     credentials_json = os.environ.get("CREDENTIALS_JSON")
@@ -53,6 +45,5 @@ if __name__ == '__main__':
 
     if  args.alltb and (args.dataset is None or args.table is not None):
         parser.error("argument error")
-    
     
     create(args)
