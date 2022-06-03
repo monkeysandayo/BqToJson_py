@@ -19,7 +19,7 @@
     cd bq2json_py
     python main.py -d=dataset_name 
 
-* -d / --dataset (required): project name in BigQuery
-* -t / --table (optional) : csv file name 
+* -d / --dataset (required): dataset name in a project of BigQuery
+* -t / --table (optional) : table name in the dataset
 * -at / --alltb (default=False) : Must be used with -d / --dataset to create a json file of all tables information of the given dataset
 
