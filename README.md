@@ -11,6 +11,8 @@
 
 ## Environments
 
+    cd bq2josn_py
+    vi .env
     CREDENTIALS_JSON = "{YOUR_CREDENTIAL_JSON_PATH}"
 
 
