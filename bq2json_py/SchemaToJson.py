@@ -6,14 +6,13 @@ import DuplicateKeyError
 
 class SchemaToJson:
 
-    def __init__(self, client, dataset_id, schema_path="",deletion_protection=True):
+    def __init__(self, client, dataset_id, deletion_protection=True):
         self.client = client
         self.dataset_id = dataset_id
         self.datasets = set(self.client.list_datasets())
         self.tables = set()
         self.schema_dict = dict()
         self.table_dict = dict()
-        self.schema_path = schema_path
         self.deletion_protection = deletion_protection
     
     def get_dataset_ref(self):
@@ -48,7 +47,7 @@ class SchemaToJson:
     
     def createInfo(self, table):
         return {
-            "schema_path": self.schema_path,
+            "schema_path": f"./tables/{self.dataset_id}_schema/{table.table_id}.json",
             "deletion_protection" : self.deletion_protection,
             "time_partitioning": self.time_partitioning(table),
             "clustering": table.clustering_fields,
@@ -56,19 +55,20 @@ class SchemaToJson:
    }
     
     def time_partitioning(self, table):
+        
         return {
-            "field": table.time_partitioning.field,
-            "type": table.time_partitioning.type_,
+            "field": "" if table.time_partitioning.field == None else table.time_partitioning.field,
+            "type": "" if table.time_partitioning.type_ == None else table.time_partitioning.type_,
             "expiration_ms": 0 if table.partition_expiration == None else table.partition_expiration,
             "require_partition_filter": False if table.require_partition_filter == None else table.require_partition_filter
         }
 
     def write_to_json(self):
         try:
-            os.makedirs("../data/schemas")
+            os.makedirs(f"../data/tables/{self.dataset_id}_schema")
         except FileExistsError:
             pass
-        file_path = f"../data/schemas/{self.dataset_id}_{secrets.token_urlsafe(6)}.json"
+        file_path = f"../data/tables/{self.dataset_id}_schema/{self.dataset_id}.json"
         with open(file_path,'w') as file:
             json.dump(self.createSchema(), file, indent=4 )
 

@@ -11,7 +11,7 @@ def create(args):
     credentials_json = os.environ.get("CREDENTIALS_JSON")
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_json
 
-    client = bigquery.Client()
+    client = bigquery.Client(project=args.project)
 
 
     # project = client.project
@@ -38,6 +38,7 @@ def create(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get Schema or RDS metadata Info in JSON format')
     parser.add_argument('-at', '--alltb', help="all tables in current dataset (Must use with dataset option)", dest="alltb", action='store_true')
+    parser.add_argument('-p', '--project', help="project_id", dest="project", type=str, required=True)
     parser.add_argument('-d', '--dataset', help="dataset id", dest="dataset", type=str, required=True)
     parser.add_argument('-t', '--table', help="table_id", dest="table", type=str)
 

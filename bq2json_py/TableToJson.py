@@ -21,10 +21,11 @@ class TableToJson(SchemaToJson):
 
     def write_to_json(self):
         try:
-            os.makedirs("../data/tables")
+            os.makedirs(f"../data/tables/{self.table_id}_table")
+          
         except FileExistsError:
             pass
-        file_path = f"../data/tables/{self.table_id}_{secrets.token_urlsafe(6)}.json"
+        file_path = f"../data/tables/{self.table_id}_table/{self.table_id}.json"
         f = io.StringIO("")
         self.client.schema_to_json(self.table.schema, f)
         with open(file_path,'w') as file:
