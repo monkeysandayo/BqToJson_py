@@ -46,6 +46,7 @@ class SchemaToJson:
             self.table_dict[table.table_id] = self.createInfo(table)
     
     def createInfo(self, table):
+
         return {
             "schema_path": f"./tables/{self.dataset_id}_schema/{table.table_id}.json",
             "deletion_protection" : self.deletion_protection,
@@ -55,10 +56,19 @@ class SchemaToJson:
    }
     
     def time_partitioning(self, table):
-        
+        field = ""
+        type_ = ""
+        try:
+           field = table.time_partitioning.field
+        except AttributeError:
+            pass
+        try:
+           type_ = table.time_partitioning.type_
+        except AttributeError:
+            pass
         return {
-            "field": "" if table.time_partitioning.field == None else table.time_partitioning.field,
-            "type": "" if table.time_partitioning.type_ == None else table.time_partitioning.type_,
+            "field": field,
+            "type": type_,
             "expiration_ms": 0 if table.partition_expiration == None else table.partition_expiration,
             "require_partition_filter": False if table.require_partition_filter == None else table.require_partition_filter
         }
