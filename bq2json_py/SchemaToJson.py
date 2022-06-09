@@ -37,7 +37,7 @@ class SchemaToJson:
         if self.dataset_id not in self.schema_dict:
             self.schema_dict[self.dataset_id] = self.table_dict
         else:
-            raise DuplicateKeyError('{self.dataset_id} already present')
+            raise DuplicateKeyError(f'{self.dataset_id} already present')
         
         return self.schema_dict
         
@@ -46,12 +46,11 @@ class SchemaToJson:
             self.table_dict[table.table_id] = self.createInfo(table)
     
     def createInfo(self, table):
-
         return {
             "schema_path": f"./tables/{self.dataset_id}_schema/{table.table_id}.json",
             "deletion_protection" : self.deletion_protection,
             "time_partitioning": self.time_partitioning(table),
-            "clustering": table.clustering_fields,
+            "clustering": [] if table.clustering_fields is None else table.clustering_fields,
             "labels": table.labels
    }
     
@@ -66,6 +65,8 @@ class SchemaToJson:
            type_ = table.time_partitioning.type_
         except AttributeError:
             pass
+        if (field == "" and type_ == "" and not (table.partition_expiration or table.require_partition_filter)):
+            return None
         return {
             "field": field,
             "type": type_,
@@ -75,10 +76,10 @@ class SchemaToJson:
 
     def write_to_json(self):
         try:
-            os.makedirs(f"../data/tables/{self.dataset_id}_schema")
+            os.makedirs(f"../data/tables")
         except FileExistsError:
             pass
-        file_path = f"../data/tables/{self.dataset_id}_schema/{self.dataset_id}.json"
+        file_path = f"../data/tables/{self.dataset_id}_tables.json"
         with open(file_path,'w') as file:
             json.dump(self.createSchema(), file, indent=4 )
 
