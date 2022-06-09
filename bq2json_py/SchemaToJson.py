@@ -55,8 +55,8 @@ class SchemaToJson:
    }
     
     def time_partitioning(self, table):
-        field = ""
-        type_ = ""
+        field = None
+        type_ = None
         try:
            field = table.time_partitioning.field
         except AttributeError:
@@ -65,7 +65,7 @@ class SchemaToJson:
            type_ = table.time_partitioning.type_
         except AttributeError:
             pass
-        if (field == "" and type_ == "" and not (table.partition_expiration or table.require_partition_filter)):
+        if ( not (field or type_) and not (table.partition_expiration or table.require_partition_filter)):
             return None
         return {
             "field": field,
